@@ -1,25 +1,36 @@
+const chatInput = 
+    document.querySelector('.chat-input textarea');
+const sendChatBtn = 
+    document.querySelector('.chat-input button');
+const chatbox = document.querySelector(".chatbox");
 
-function reqSend(){
-const myHeaders = new Headers();
 
+function sendBtn() {
 
-const raw = JSON.stringify({
-    "model": "openai/gpt-oss-20b",
-    "input": document.getElementById("txtGet").value
-});
+    chatInput.append("");
 
-const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow"
-};
+    const myHeaders = new Headers();
+   
+    const raw = JSON.stringify({
+        "model": "openai/gpt-oss-20b",
+        "input": document.getElementById("msgEnt").value
+    });
 
-fetch("https://api.groq.com/openai/v1/responses", requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
-    document.getElementById("rsp").innerText=result.output[1].content[0].text;
-    console.log(result);
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+    };
+
+    let myLast = document.getElementById("msgEnt").value;
+    chatbox.innerHTML+=`<h5>${myLast}</h5>`
+
     
-})
+
+    fetch("https://api.groq.com/openai/v1/responses", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+            chatbox.innerHTML+=marked.parse(`<p>${result.output[1].content[0].text}</p>`);
+    })
 }
