@@ -1,8 +1,9 @@
-const chatInput = 
+const chatInput =
     document.querySelector('.chat-input textarea');
-const sendChatBtn = 
+const sendChatBtn =
     document.querySelector('.chat-input button');
 const chatbox = document.querySelector(".chatbox");
+let conv = [];
 
 
 function sendBtn() {
@@ -11,9 +12,13 @@ function sendBtn() {
 
     const myHeaders = new Headers();
    
+    conv.push({
+        role: "user",
+        content: msgEnt
+    })
     const raw = JSON.stringify({
         "model": "openai/gpt-oss-20b",
-        "input": document.getElementById("msgEnt").value
+        "input": conv
     });
 
     const requestOptions = {
@@ -24,13 +29,19 @@ function sendBtn() {
     };
 
     let myLast = document.getElementById("msgEnt").value;
-    chatbox.innerHTML+=`<h5>${myLast}</h5>`
+    chatbox.innerHTML += `<h5>${msgEnt}</h5>`
 
-    
+
 
     fetch("https://api.groq.com/openai/v1/responses", requestOptions)
         .then((response) => response.json())
         .then((result) => {
-            chatbox.innerHTML+=marked.parse(`<p>${result.output[1].content[0].text}</p>`);
-    })
+            let aiAns = result.output[1].content[0].text;
+
+            conv.push({
+                role: "assistant",
+                content: aiAns
+            })
+            chatbox.innerHTML += marked.parse(`<p>${aiAns}</p>`);
+        })
 }
